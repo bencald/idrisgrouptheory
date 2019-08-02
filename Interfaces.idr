@@ -37,11 +37,14 @@ interface (Group g, EquivalenceRelation r) => Choice g (f : g -> g) (r : g -> g 
   coherence   : Group g => {a : g} -> {a' : g} -> {b : g} -> {b' : g} ->
                 a `r` a' -> b `r` b' -> f (a <> b) = f (a' <> b')
 
-interface (Group g) => Subgroup g (f : g -> Bool) where
-  op_closure  : (a : g) -> (b : g) -> {auto prfa : f a = True} ->
-                {auto prfb : f b = True} -> f (a <> b) = True
-  id_closure  : (f (Interfaces.identity)) = True
-  inv_closure : (a : g) -> {auto prf : f a = True} -> (f (fst $ leftInv a) = True)
+interface Group g => Subgroup g (f : g -> Bool) where
+  op_closure  : Group g => (a : g) -> (b : g) ->
+                           {auto prfa : f a = True} ->
+                           {auto prfb : f b = True} ->
+                           f (a <> b) = True
+  id_closure  : Group g => f (Interfaces.identity) = True
+  inv_closure : Group g => (a : g) -> {auto prf : f a = True} ->
+                           (f (fst $ leftInv a) = True)
 
 data Canon : (g : Type) -> (f : g -> g) -> (r : g -> g -> Type) -> Type where
   InCanon : (a : g) -> {auto prf: a = f a} -> Canon g f r
@@ -98,6 +101,20 @@ canonRespectsEq {prfx} {prfy} Refl = case allEqProofsareEquivalent prfx prfy of
       in ( (InCanon (f xInv) {prf= canonizeOnce {g} {f} {r} xInv}) **
             canonRespectsEq equality)
 
+inRespectsEq : Subgroup g f => {prfx : f x = True} ->
+                               (eq : x = y) ->
+                               In x {prf=prfx} = In y {prf=prfy}
+inRespectsEq {prfx} {prfy} Refl = case allEqProofsareEquivalent prfx prfy of
+  Refl => Refl
+
+Subgroup g f => Group (Restriction g f) where
+  (<>) (In x) (In y) =
+    (In (x<>y) {prf=op_closure x y})
+  assoc (In x) (In y) (In z) = inRespectsEq $ assoc x y z
+  identity       = (In identity {prf=id_closure {f}})
+  leftID (In x)  = inRespectsEq $ leftID x
+  leftInv (In x) = ((In (fst $ leftInv x) {prf=inv_closure {f} x}) **
+    inRespectsEq $ snd $ leftInv x)
 
 interface (Group g, Group h) => Homomorphism g h (f : g -> h) where
   respectsOp : f (x <> y) = f x <> f y

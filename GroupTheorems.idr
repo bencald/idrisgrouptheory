@@ -130,21 +130,24 @@ cancel (ArgL x) = rCancel x
 cancel (ArgR x) = lCancel x
 
 
---Chapter 2
-
---2.1
-
---Proposition 1:
 {-
-The Subgroup Criterion
-A subset (restriction of type) H of a group G is a subgroup if and only if
-(1) H =/= empty
-(2) For all x, y in H, x <> Inverse(y) is in H
+SYLOW'S THEOREM:
+PLAN SKETCH
+Definition:
+  Let G be a group and let p be a prime.
+    (1) A subgroup of order p^a for some a > 0 is called a p-group.
+        Subgroups of G which are p-groups are called p-subgroups.
+    (2) If G is a group of order (p^a)*m where p does not divide m,
+        then a subgroup of order p^a is called a Sylow p-subgroup of G.
+    (3) The set of Sylow p-subgroups will be written as Syl_p(G) and the
+        number of Sylow p-subgroups of G will be denoted by n_p(G).
 
-Subset => (1),(2) is trivial.
--}
-{-
-subgroup_criterion : Group g => {f : g -> Bool} -> {a : g} -> {b : g} -> (f a = True)
-                      -> (f b = True) -> (f (a <>(fst $ getInv b)) = True) -> Subgroup g f
-subgroup_criterion {g} {f} prf prf1 prf2 = ?hole
+Sylow's Theorem:
+  Let G be a group of order (p^a)*m where p is a prime which does not divide m,
+    (1) Sylow p-subgroups of G exist i.e. Syl_p(G) =/= empty
+    (2) If P is a Sylow p-subgroup of G and Q is any p-subgroup of G, then there
+        exists a g in G such that Q < gPg^-1 i.e. Q is contained in some
+        conjugate of P.
+    (3) The number of Sylow P-Subgroups of G is of the form 1 + kp, i.e.
+        n_p == 1 mod p and n_p | m.
 -}
