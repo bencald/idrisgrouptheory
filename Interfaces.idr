@@ -31,11 +31,12 @@ interface EquivalenceRelation (r : t -> t -> Type) where
   symmetric : {a : t} -> {b : t} -> a `r` b -> b `r` a
   transitive : {a : t} -> {b : t} -> {c : t} -> a `r` b -> b `r` c -> a `r` c
 
-interface (Group g, EquivalenceRelation r) => Choice g (f : g -> g) (r : g -> g -> Type) where
-  choice      : Group g => {a : g} -> a `r` f a
-  welldefined : Group g => {a : g} -> {b : g} -> a `r` b -> f (a) = f (b)
-  coherence   : Group g => {a : g} -> {a' : g} -> {b : g} -> {b' : g} ->
-                a `r` a' -> b `r` b' -> f (a <> b) = f (a' <> b')
+interface (Group g, EquivalenceRelation r) =>
+  Choice g (f : g -> g) (r : g -> g -> Type) where
+    choice      : Group g => {a : g} -> a `r` f a
+    welldefined : Group g => {a : g} -> {b : g} -> a `r` b -> f (a) = f (b)
+    coherence   : Group g => {a : g} -> {a' : g} -> {b : g} -> {b' : g} ->
+                  a `r` a' -> b `r` b' -> f (a <> b) = f (a' <> b')
 
 interface Group g => Subgroup g (f : g -> Bool) where
   op_closure  : Group g => (a : g) -> (b : g) ->
