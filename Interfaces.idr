@@ -1,5 +1,7 @@
 module Interfaces
 
+import Data.Vect
+
 %default total
 %access public export
 
@@ -23,8 +25,8 @@ interface Group g => GroupAction g a where
 interface Group g => Abelian g where
   op_commutes : (a : g) -> (b : g) -> a <> b = b <> a
 
-data Restriction : (g : Type) -> (f : g -> Bool) -> Type where
-  In : (e : g) -> {auto prf : f e = True} -> Restriction g f
+data Refinement : (g : Type) -> (f : g -> Bool) -> Type where
+  In : (e : g) -> {auto prf : f e = True} -> Refinement g f
 
 interface EquivalenceRelation (r : t -> t -> Type) where
   reflexive : {a : t} -> a `r` a
@@ -108,7 +110,7 @@ inRespectsEq : Subgroup g f => {prfx : f x = True} ->
 inRespectsEq {prfx} {prfy} Refl = case allEqProofsareEquivalent prfx prfy of
   Refl => Refl
 
-Subgroup g f => Group (Restriction g f) where
+Subgroup g f => Group (Refinement g f) where
   (<>) (In x) (In y) =
     (In (x<>y) {prf=op_closure x y})
   assoc (In x) (In y) (In z) = inRespectsEq $ assoc x y z
